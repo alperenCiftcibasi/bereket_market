@@ -1,4 +1,4 @@
-package com.market.market_backend;
+package com.market.starter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
