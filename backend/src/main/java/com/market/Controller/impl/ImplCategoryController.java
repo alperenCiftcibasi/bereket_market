@@ -15,6 +15,8 @@ import com.market.Dto.CategoryResponseDTO;
 import com.market.Entities.Category;
 import com.market.Services.ICategoryServices;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("rest/api/categories")
 public class ImplCategoryController implements ICategoryController {
@@ -24,7 +26,7 @@ public class ImplCategoryController implements ICategoryController {
 
     @Override
     @PostMapping(path = "/post")
-    public CategoryResponseDTO addCategory(@RequestBody CategoryRequestDTO category) {
+    public CategoryResponseDTO addCategory(@RequestBody @Valid CategoryRequestDTO category) {
         return categoryService.save(category);
     }
 

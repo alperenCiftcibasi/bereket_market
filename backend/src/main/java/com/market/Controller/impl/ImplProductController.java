@@ -2,7 +2,6 @@ package com.market.Controller.impl;
 
 import java.util.List;
 
-import javax.print.PrintService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.market.Controller.IProductController;
 import com.market.Dto.ProductRequestDTO;
 import com.market.Dto.ProductResponseDTO;
-import com.market.Entities.Product;
 import com.market.Services.IProductServices;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("rest/api/products")
@@ -26,7 +26,7 @@ public class ImplProductController implements IProductController {
 
     @Override
     @PostMapping(path = "/post")
-    public ProductResponseDTO addProduct(@RequestBody ProductRequestDTO productdto) {
+    public ProductResponseDTO addProduct(@RequestBody @Valid ProductRequestDTO productdto) {
         return productService.save(productdto);
     }
 

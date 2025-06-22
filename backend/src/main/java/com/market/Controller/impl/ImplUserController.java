@@ -15,6 +15,8 @@ import com.market.Dto.UserResponseDTO;
 import com.market.Entities.User;
 import com.market.Services.IUserServices;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("rest/api/users")
 public class ImplUserController implements IUserController {
@@ -24,7 +26,7 @@ public class ImplUserController implements IUserController {
 
     @Override
     @PostMapping(path = "/post")
-    public UserResponseDTO createUser(@RequestBody UserRequestDTO user) {
+    public UserResponseDTO createUser(@RequestBody @Valid UserRequestDTO user) {
         return userService.save(user);
     }
 
