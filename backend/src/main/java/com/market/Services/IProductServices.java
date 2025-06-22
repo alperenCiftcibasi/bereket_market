@@ -2,9 +2,12 @@ package com.market.Services;
 
 import java.util.List;
 
-import com.market.Entities.Product;
+
+import com.market.Dto.ProductRequestDTO;
+import com.market.Dto.ProductResponseDTO;
+
 
 public interface IProductServices {
-	Product save(Product product);
-    List<Product>  findAll();
+	ProductResponseDTO save(ProductRequestDTO dto);
+    List<ProductResponseDTO>  findAll();
 }

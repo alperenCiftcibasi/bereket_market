@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.market.Controller.IProductController;
+import com.market.Dto.ProductRequestDTO;
+import com.market.Dto.ProductResponseDTO;
 import com.market.Entities.Product;
 import com.market.Services.IProductServices;
 
@@ -24,13 +26,13 @@ public class ImplProductController implements IProductController {
 
     @Override
     @PostMapping(path = "/post")
-    public Product addProduct(@RequestBody Product product) {
-        return productService.save(product);
+    public ProductResponseDTO addProduct(@RequestBody ProductRequestDTO productdto) {
+        return productService.save(productdto);
     }
 
     @Override
     @GetMapping(path = "/list")
-    public List<Product> getAllProducts() {
+    public List<ProductResponseDTO> getAllProducts() {
         return productService.findAll();
     }
 }

@@ -1,10 +1,15 @@
+// com.market.Services.impl.ImplCategoryService.java
 package com.market.Services.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.market.Dto.CategoryMapper;
+import com.market.Dto.CategoryRequestDTO;
+import com.market.Dto.CategoryResponseDTO;
 import com.market.Entities.Category;
 import com.market.Repository.CategoryRepository;
 import com.market.Services.ICategoryServices;
@@ -16,12 +21,17 @@ public class ImplCategoryServices implements ICategoryServices {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Category save(Category category) {
-        return categoryRepository.save(category);
+    public CategoryResponseDTO save(CategoryRequestDTO dto) {
+        Category category = CategoryMapper.toEntity(dto);
+        Category saved = categoryRepository.save(category);
+        return CategoryMapper.toDto(saved);
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDTO> findAll() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(CategoryMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

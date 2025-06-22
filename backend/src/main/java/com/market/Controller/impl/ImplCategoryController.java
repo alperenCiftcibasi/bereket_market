@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.market.Controller.ICategoryController;
+import com.market.Dto.CategoryRequestDTO;
+import com.market.Dto.CategoryResponseDTO;
 import com.market.Entities.Category;
 import com.market.Services.ICategoryServices;
 
@@ -22,13 +24,13 @@ public class ImplCategoryController implements ICategoryController {
 
     @Override
     @PostMapping(path = "/post")
-    public Category addCategory(@RequestBody Category category) {
+    public CategoryResponseDTO addCategory(@RequestBody CategoryRequestDTO category) {
         return categoryService.save(category);
     }
 
     @Override
     @GetMapping(path = "/list")
-    public List<Category> getAllCategories() {
+    public List<CategoryResponseDTO> getAllCategories() {
         return categoryService.findAll();
     }
 }

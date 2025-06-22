@@ -2,9 +2,10 @@ package com.market.Services;
 
 import java.util.List;
 
-import com.market.Entities.Category;
+import com.market.Dto.CategoryRequestDTO;
+import com.market.Dto.CategoryResponseDTO;
 
 public interface ICategoryServices {
-	Category save(Category category);
-    List<Category> findAll();
+	CategoryResponseDTO save(CategoryRequestDTO category);
+    List<CategoryResponseDTO> findAll();
 }

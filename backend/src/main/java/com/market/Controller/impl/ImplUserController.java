@@ -10,25 +10,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.market.Controller.IUserController;
+import com.market.Dto.UserRequestDTO;
+import com.market.Dto.UserResponseDTO;
 import com.market.Entities.User;
 import com.market.Services.IUserServices;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("rest/api/users")
 public class ImplUserController implements IUserController {
 
     @Autowired
     private IUserServices userService;
 
     @Override
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    @PostMapping(path = "/post")
+    public UserResponseDTO createUser(@RequestBody UserRequestDTO user) {
         return userService.save(user);
     }
 
     @Override
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getALList();
+    @GetMapping(path = "/list")
+    public List<UserResponseDTO> getAllUsers() {
+        return userService.findAll();
     }
 }
