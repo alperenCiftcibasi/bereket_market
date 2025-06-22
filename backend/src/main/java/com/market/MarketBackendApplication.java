@@ -1,13 +1,11 @@
-package com.market.starter;
+package com.market;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class MarketBackendApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MarketBackendApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(MarketBackendApplication.class, args);
+    }
 }

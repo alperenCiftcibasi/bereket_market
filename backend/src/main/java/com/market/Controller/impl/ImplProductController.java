@@ -16,20 +16,20 @@ import com.market.Entities.Product;
 import com.market.Services.IProductServices;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("rest/api/products")
 public class ImplProductController implements IProductController {
 
     @Autowired
     private IProductServices productService;
 
     @Override
-    @PostMapping
+    @PostMapping(path = "/post")
     public Product addProduct(@RequestBody Product product) {
         return productService.save(product);
     }
 
     @Override
-    @GetMapping
+    @GetMapping(path = "/list")
     public List<Product> getAllProducts() {
         return productService.findAll();
     }

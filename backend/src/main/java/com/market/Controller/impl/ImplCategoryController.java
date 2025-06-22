@@ -14,20 +14,20 @@ import com.market.Entities.Category;
 import com.market.Services.ICategoryServices;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("rest/api/categories")
 public class ImplCategoryController implements ICategoryController {
 
     @Autowired
     private ICategoryServices categoryService;
 
     @Override
-    @PostMapping
+    @PostMapping(path = "/post")
     public Category addCategory(@RequestBody Category category) {
         return categoryService.save(category);
     }
 
     @Override
-    @GetMapping
+    @GetMapping(path = "/list")
     public List<Category> getAllCategories() {
         return categoryService.findAll();
     }
