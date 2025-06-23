@@ -1,12 +1,11 @@
 package com.market.Controller;
 
-import java.util.List;
-
 import com.market.Dto.ProductRequestDTO;
 import com.market.Dto.ProductResponseDTO;
-import com.market.Entities.Product;
+
+import java.util.List;
 
 public interface IProductController {
-	 ProductResponseDTO addProduct(ProductRequestDTO productdto);
-	    List<ProductResponseDTO> getAllProducts();
+    ProductResponseDTO addProduct(ProductRequestDTO productdto);
+    List<ProductResponseDTO> getAllProducts();
 }
