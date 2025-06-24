@@ -4,7 +4,7 @@ import com.market.Dto.CartItemRequestDto;
 import com.market.Dto.CartItemResponseDto;
 import com.market.Entities.User;
 import com.market.Repository.UserRepository;
-import com.market.Services.CartService;
+import com.market.Services.ICartServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ImplCartController {
 
     @Autowired
-    private CartService cartService;
+    private ICartServices cartService;
 
     @Autowired
     private UserRepository userRepository;

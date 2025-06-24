@@ -9,4 +9,6 @@ import com.market.Entities.User;
 public interface IUserServices {
 	UserResponseDTO save(UserRequestDTO user);
     List<UserResponseDTO> findAll();
+    User getCurrentUser();
+
 }
