@@ -41,7 +41,7 @@ function CategorySection({ category }) {
         gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
         gap: '1rem'
       }}>
-        {category.products.slice(0, 4).map(product => (
+        {category.products.slice(0, 2).map(product => (
           <Product
             key={product.id}
             product={product}
