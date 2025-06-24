@@ -9,10 +9,10 @@ function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Örnek kullanıcılar
+  // Örnek kullanıcılar (isim ve soyisim eklendi)
   const validUsers = {
-    'admin@example.com': { role: 'admin', password: 'admin123' },
-    'user@example.com': { role: 'user', password: 'user123' },
+    'admin@example.com': { isim: 'Admin', soyisim: 'User', role: 'admin', password: 'admin123' },
+    'user@example.com': { isim: 'Ahmet', soyisim: 'Yılmaz', role: 'user', password: 'user123' },
   };
 
   const handleSubmit = (e) => {
@@ -32,18 +32,20 @@ function LoginPage() {
 
     const userData = {
       username: email,
+      isim: user.isim,
+      soyisim: user.soyisim,
       role: user.role,
       token: 'fake-jwt-token',
     };
 
     login(userData); // Context’e kaydet
+
     if (user.role === 'admin') {
       navigate('/admin');  // Admin ise admin paneline yönlendir
     } else {
       navigate('/');       // Diğer kullanıcılar ana sayfaya gider
     }
   };
-  
 
   return (
     <>

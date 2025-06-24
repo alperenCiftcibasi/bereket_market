@@ -3,21 +3,17 @@ import React, { createContext, useContext, useState } from 'react';
 // Context oluştur
 const AuthContext = createContext();
 
-// Provider component
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);  // {username, role, token...}
+  const [user, setUser] = useState(null);  // Başlangıçta null
 
-  // Login fonksiyonu: Backend’den gelen userData ile state’i günceller
+  // Login fonksiyonu (test amaçlı, backend sonrası kolayca güncellenir)
   const login = (userData) => {
     setUser(userData);
-    // Örnek: token localStorage’a kaydedilebilir
-    localStorage.setItem('token', userData.token);
   };
 
-  // Logout fonksiyonu: State ve localStorage temizlenir
+  // Logout fonksiyonu
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('token');
   };
 
   return (
@@ -27,7 +23,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Hook olarak dışa aktar
 export function useAuth() {
   return useContext(AuthContext);
 }
