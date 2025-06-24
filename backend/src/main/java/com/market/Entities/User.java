@@ -33,5 +33,7 @@ public class User {
     private String address;       // Adres
     private String fullName;      // İsim Soyisim (Opsiyonel, name’den farklı)
     private String paymentMethod; // Ödeme yöntemi (örn: Kredi kartı, Paypal vb
+    
+    private boolean enabled = false; // Email doğrulanana kadar giriş engelli
 
 }

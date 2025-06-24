@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/verify").permitAll()  // ✅ Bunu ekledik
                 .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                 .anyRequest().authenticated()
             )
