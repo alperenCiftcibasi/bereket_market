@@ -12,4 +12,7 @@ public interface IUserServices {
     List<UserResponseDTO> findAll();
     void deleteUser(Long id);
     UserResponseDTO updateUser(Long id, UserUpdateRequestDTO dto);
+    User getCurrentUser();
+
+
 }

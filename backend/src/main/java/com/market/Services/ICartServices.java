@@ -5,7 +5,7 @@ import java.util.List;
 import com.market.Dto.CartItemRequestDto;
 import com.market.Dto.CartItemResponseDto;
 
-public interface CartService {
+public interface ICartServices {
     void addToCart(Long userId, CartItemRequestDto requestDto);
     void removeFromCart(Long userId, Long productId);
     List<CartItemResponseDto> getCartItems(Long userId);

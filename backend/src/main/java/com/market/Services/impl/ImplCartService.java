@@ -4,7 +4,7 @@ import com.market.Dto.CartItemRequestDto;
 import com.market.Dto.CartItemResponseDto;
 import com.market.Entities.*;
 import com.market.Repository.*;
-import com.market.Services.CartService;
+import com.market.Services.ICartServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ImplCartService implements CartService {
+public class ImplCartService implements ICartServices {
 
     @Autowired
     private CartRepository cartRepository;

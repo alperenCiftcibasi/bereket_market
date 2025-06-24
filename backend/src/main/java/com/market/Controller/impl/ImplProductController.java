@@ -49,7 +49,11 @@ public class ImplProductController implements IProductController {
 
     // Herkes - Ürünleri listele
     @Override
+
     @GetMapping(path = "/get")
+
+    
+
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
     }
