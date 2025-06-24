@@ -11,4 +11,9 @@ public class UserResponseDTO {
     private Long id;
     private String username;
     private String email;
+    private String role;
+    private String phone;
+    private String address;
+    private String fullName;
+    private String paymentMethod;
 }

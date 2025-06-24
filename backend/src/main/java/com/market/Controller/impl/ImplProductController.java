@@ -23,7 +23,6 @@ public class ImplProductController implements IProductController {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    
     public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody @Valid ProductRequestDTO productdto) {
         return ResponseEntity.ok(productService.save(productdto)); 
         }
@@ -50,7 +49,7 @@ public class ImplProductController implements IProductController {
 
     // Herkes - Ürünleri listele
     @Override
-    @GetMapping
+    @GetMapping(path = "/get")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
     }

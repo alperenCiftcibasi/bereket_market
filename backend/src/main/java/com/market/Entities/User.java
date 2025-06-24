@@ -27,5 +27,11 @@ public class User {
     private String password;
     
     private String role; // "USER" veya "ADMIN" gibi değerler
+    
+ // Yeni alanlar
+    private String phone;         // Telefon numarası
+    private String address;       // Adres
+    private String fullName;      // İsim Soyisim (Opsiyonel, name’den farklı)
+    private String paymentMethod; // Ödeme yöntemi (örn: Kredi kartı, Paypal vb
 
 }

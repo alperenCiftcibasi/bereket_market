@@ -1,4 +1,3 @@
-// com.market.Services.impl.ImplCategoryService.java
 package com.market.Services.impl;
 
 import java.util.List;
@@ -33,5 +32,29 @@ public class ImplCategoryServices implements ICategoryServices {
                 .stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoryResponseDTO findById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Kategori bulunamadı: " + id));
+        return CategoryMapper.toDto(category);
+    }
+
+    @Override
+    public CategoryResponseDTO update(Long id, CategoryRequestDTO dto) {
+        Category existing = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Kategori bulunamadı: " + id));
+        existing.setName(dto.getName());
+        Category updated = categoryRepository.save(existing);
+        return CategoryMapper.toDto(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new RuntimeException("Kategori bulunamadı: " + id);
+        }
+        categoryRepository.deleteById(id);
     }
 }

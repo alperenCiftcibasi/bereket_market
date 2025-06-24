@@ -19,23 +19,28 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // Token üretme
+    // Token üretme (email + role içerir)
     public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
-                .claim("role", role)  // ← rolü buraya ekliyoruz
+                .claim("role", role) // rolü JWT içine ekliyoruz
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Email çıkarma
+    // Token'dan email çıkar
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // Token geçerli mi
+    // Token'dan rol çıkar (gerekirse frontend'de de kullanılabilir)
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    // Token geçerlilik kontrolü
     public boolean isTokenValid(String token, String userEmail) {
         return extractEmail(token).equals(userEmail) && !isTokenExpired(token);
     }
