@@ -3,7 +3,6 @@ package com.market.Entities;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import com.market.Entities.CartItem;
 
 @Entity
 public class Cart {

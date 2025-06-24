@@ -1,4 +1,4 @@
-package com.market.Controller;
+package com.market.Controller.impl;
 
 import com.market.Dto.CartItemRequestDto;
 import com.market.Dto.CartItemResponseDto;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
-public class CartController {
+public class ImplCartController {
 
     @Autowired
     private CartService cartService;

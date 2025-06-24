@@ -68,7 +68,8 @@ public class ImplCartService implements CartService {
         cart.removeItem(itemToRemove);
         cartRepository.save(cart);
     }
-   // Sepetteki bir ürünün adetini güncellemek
+
+    // --- Ürün adeti güncelle ---
     @Override
     public void updateCartItemQuantity(Long userId, Long productId, int newQuantity) {
         if (newQuantity <= 0) {
@@ -87,9 +88,10 @@ public class ImplCartService implements CartService {
                 .orElseThrow(() -> new RuntimeException("Ürün sepette bulunamadı"));
 
         item.setQuantity(newQuantity);
-        cartRepository.save(cart); // Cascade sayesinde item da güncellenir
+        cartRepository.save(cart);
     }
-    //Tüm verileri temizler
+
+    // --- Sepeti tamamen temizle ---
     @Override
     public void clearCart(Long userId) {
         User user = userRepository.findById(userId)
@@ -98,8 +100,8 @@ public class ImplCartService implements CartService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Sepet bulunamadı"));
 
-        cart.getItems().clear(); // Tüm ürünleri sil
-        cartRepository.save(cart); // Güncellemeyi kaydet
+        cart.getItems().clear();
+        cartRepository.save(cart);
     }
 
     // --- Sepetteki ürünleri getir ---
@@ -114,10 +116,15 @@ public class ImplCartService implements CartService {
         List<CartItemResponseDto> responseList = new ArrayList<>();
 
         for (CartItem item : cart.getItems()) {
+            Product product = item.getProduct();
+
             CartItemResponseDto dto = new CartItemResponseDto();
-            dto.setProductId(item.getProduct().getId());
-            dto.setProductName(item.getProduct().getName());
+            dto.setProductId(product.getId());
+            dto.setProductName(product.getName());
             dto.setQuantity(item.getQuantity());
+            dto.setPrice(product.getPrice());
+            dto.setTotalPrice(product.getPrice() * item.getQuantity());
+            dto.setImageUrl(product.getImageUrl()); // imageUrl alanı Product entity'de varsa
             responseList.add(dto);
         }
 

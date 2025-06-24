@@ -17,15 +17,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + email));
+
+        // Spring Security için role "ROLE_" prefix ile atanmalı
+        String role = "ROLE_" + user.getRole().toUpperCase();
 
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
-            user.getPassword(),
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+            user.getPassword(), // Bcrypt encoded şifre
+            Collections.singletonList(new SimpleGrantedAuthority(role))
         );
     }
-
 }

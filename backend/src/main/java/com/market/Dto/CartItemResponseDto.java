@@ -6,6 +6,10 @@ public class CartItemResponseDto {
     private String productName;
     private int quantity;
 
+    private double price;        // Tekil ürün fiyatı
+    private double totalPrice;   // quantity * price
+    private String imageUrl;     // Ürün görseli (opsiyonel)
+
     // --- Getter & Setter ---
 
     public Long getProductId() {
@@ -30,5 +34,29 @@ public class CartItemResponseDto {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

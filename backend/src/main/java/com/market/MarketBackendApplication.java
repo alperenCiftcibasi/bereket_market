@@ -15,4 +15,5 @@ public class MarketBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(MarketBackendApplication.class, args);
     }
+    
 }

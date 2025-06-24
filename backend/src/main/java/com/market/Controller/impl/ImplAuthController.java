@@ -1,4 +1,4 @@
-package com.market.Controller;
+package com.market.Controller.impl;
 
 import com.market.Dto.AuthRequest;
 import com.market.Dto.AuthResponse;
@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("api/auth")
+public class ImplAuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -49,11 +48,10 @@ public class AuthController {
         User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new RuntimeException("Kullanıcı veritabanında bulunamadı"));
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
          return ResponseEntity.ok(new AuthResponse(token));
         
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequest request) {
@@ -64,8 +62,14 @@ public class AuthController {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setName(request.getName()); // name artık buradan alınacak
-        user.setRole("USER");
+        user.setName(request.getName());
+        
+        // Eğer rol boşsa USER olsun
+        String role = request.getRole();
+        if (role == null || (!role.equalsIgnoreCase("ADMIN") && !role.equalsIgnoreCase("USER"))) {
+            role = "USER";
+        }
+        user.setRole(role.toUpperCase());
 
         userRepository.save(user);
         return ResponseEntity.ok("Kayıt başarılı!");
