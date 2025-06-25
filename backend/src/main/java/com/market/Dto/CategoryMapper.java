@@ -1,7 +1,9 @@
-// com.market.Dto.CategoryMapper.java
 package com.market.Dto;
 
 import com.market.Entities.Category;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryMapper {
 
@@ -12,9 +14,14 @@ public class CategoryMapper {
     }
 
     public static CategoryResponseDTO toDto(Category category) {
+        List<ProductResponseDTO> products = category.getProducts().stream()
+            .map(ProductMapper::toResponseDto)
+            .collect(Collectors.toList());
+
         return new CategoryResponseDTO(
             category.getId(),
-            category.getName()
+            category.getName(),
+            products
         );
     }
 }

@@ -13,16 +13,18 @@ function CartPage() {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [selectedCardId, setSelectedCardId] = useState(null);
 
-  const handleQuantityChange = (id, delta) => {
+  const handleQuantityChange = (productId, delta) => {
     if (delta > 0) {
-      increaseQuantity(id);
+      increaseQuantity(productId);
     } else {
-      decreaseQuantity(id);
+      decreaseQuantity(productId);
     }
   };
 
+  // Toplam fiyatı backend'in gönderdiği totalPrice'dan hesaplamak yerine,
+  // frontend de fiyat * adet yapabilirsin ama backend de daha doğru olur
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.totalPrice,
     0
   );
 
@@ -42,9 +44,9 @@ function CartPage() {
     const newOrder = {
       date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
       total: totalPrice,
-      items: cartItems.map(({ id, name, price, quantity }) => ({
-        id,
-        name,
+      items: cartItems.map(({ productId, productName, price, quantity }) => ({
+        id: productId,
+        name: productName,
         price,
         quantity,
       })),
@@ -96,13 +98,7 @@ function CartPage() {
       <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
         <h1>Sepetiniz</h1>
 
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            marginTop: '1rem',
-          }}
-        >
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #ccc' }}>
               <th style={{ textAlign: 'left', padding: '0.5rem' }}>Ürün</th>
@@ -113,8 +109,8 @@ function CartPage() {
             </tr>
           </thead>
           <tbody>
-            {cartItems.map(({ id, name, price, quantity, imageUrl }) => (
-              <tr key={id} style={{ borderBottom: '1px solid #eee' }}>
+            {cartItems.map(({ productId, productName, quantity, price, totalPrice, imageUrl }) => (
+              <tr key={productId} style={{ borderBottom: '1px solid #eee' }}>
                 <td
                   style={{
                     display: 'flex',
@@ -125,7 +121,7 @@ function CartPage() {
                 >
                   <img
                     src={imageUrl}
-                    alt={name}
+                    alt={productName}
                     style={{
                       width: '60px',
                       height: '60px',
@@ -133,30 +129,27 @@ function CartPage() {
                       borderRadius: '8px',
                     }}
                   />
-                  <span>{name}</span>
+                  <span>{productName}</span>
                 </td>
                 <td style={{ textAlign: 'center' }}>{price} ₺</td>
                 <td style={{ textAlign: 'center' }}>
                   <button
-                    onClick={() => handleQuantityChange(id, -1)}
+                    onClick={() => handleQuantityChange(productId, -1)}
                     style={{ marginRight: '0.5rem' }}
                   >
                     -
                   </button>
                   {quantity}
                   <button
-                    onClick={() => handleQuantityChange(id, 1)}
+                    onClick={() => handleQuantityChange(productId, 1)}
                     style={{ marginLeft: '0.5rem' }}
                   >
                     +
                   </button>
                 </td>
-                <td style={{ textAlign: 'center' }}>{price * quantity} ₺</td>
+                <td style={{ textAlign: 'center' }}>{totalPrice} ₺</td>
                 <td style={{ textAlign: 'center' }}>
-                  <button
-                    onClick={() => removeFromCart(id)}
-                    style={{ color: 'red' }}
-                  >
+                  <button onClick={() => removeFromCart(productId)} style={{ color: 'red' }}>
                     X
                   </button>
                 </td>
@@ -247,8 +240,8 @@ function CartPage() {
               <h3>Sepetteki Ürünler</h3>
               <ul>
                 {cartItems.map(item => (
-                  <li key={item.id}>
-                    {item.name} x {item.quantity} — {item.price * item.quantity} ₺
+                  <li key={item.productId}>
+                    {item.productName} x {item.quantity} — {item.totalPrice} ₺
                   </li>
                 ))}
               </ul>

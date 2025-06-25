@@ -8,7 +8,7 @@ function CategorySection({ category }) {
   const navigate = useNavigate();
 
   const handleSeeMore = () => {
-    navigate(`/category/${category.id}`);  // Kategori sayfasına yönlendir
+    navigate(`/category/${category.id}`);
   };
 
   if (!category || !Array.isArray(category.products)) return null;

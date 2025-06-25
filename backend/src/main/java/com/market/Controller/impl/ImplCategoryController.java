@@ -12,7 +12,7 @@ import com.market.Dto.CategoryResponseDTO;
 import com.market.Services.ICategoryServices;
 
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "http://localhost:3000") // React portu
 @RestController
 @RequestMapping("rest/api/categories")
 public class ImplCategoryController implements ICategoryController {

@@ -12,15 +12,18 @@ public class ProductMapper {
         product.setPrice(dto.getPrice());
         product.setStock(dto.getStock());
         product.setCategory(category);
+        product.setImageUrl(dto.getImageUrl());  // Eğer DTO'da varsa
         return product;
     }
 
     public static ProductResponseDTO toResponseDto(Product product) {
         return new ProductResponseDTO(
+            product.getId(),                    // id eklendi
             product.getName(),
             product.getDescription(),
             product.getPrice(),
-            product.getCategory().getName()
+            product.getImageUrl(),             // imageUrl eklendi
+            product.getCategory() != null ? product.getCategory().getName() : null
         );
     }
 }

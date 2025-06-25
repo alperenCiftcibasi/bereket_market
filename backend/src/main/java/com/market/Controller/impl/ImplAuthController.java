@@ -18,7 +18,7 @@ import com.market.Repository.UserRepository;
 import com.market.Repository.VerificationTokenRepository;
 import com.market.Security.JwtUtil;
 import com.market.Services.impl.EmailService;
-
+@CrossOrigin(origins = "http://localhost:3000") // React portu
 @RestController
 @RequestMapping("api/auth")
 public class ImplAuthController {
@@ -62,8 +62,11 @@ public class ImplAuthController {
             .orElseThrow(() -> new RuntimeException("Kullanıcı veritabanında bulunamadı"));
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-        return ResponseEntity.ok(new AuthResponse(token));
+
+        // 🔁 Hem token hem role bilgisini dön
+        return ResponseEntity.ok(new AuthResponse(token, user.getRole()));
     }
+
 
     // 📌 Kayıt işlemi
     @PostMapping("/register")
@@ -78,10 +81,12 @@ public class ImplAuthController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setName(request.getName());
         user.setRole("USER");
-        user.setEnabled(false); // email doğrulanana kadar pasif
+        user.setEnabled(false); // email doğrulanana kadar FALSE
 
         // Veritabanına kaydet
+        System.out.println("Kullanıcı kayıt ediliyor: " + user.getEmail());
         userRepository.save(user);
+        System.out.println("Kayıt tamamlandı");
 
         // Token üret ve kaydet
         String token = UUID.randomUUID().toString();
@@ -89,7 +94,12 @@ public class ImplAuthController {
         tokenRepository.save(vt);
 
         // Email gönder
-        emailService.sendVerificationEmail(user.getEmail(), token);
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), token);
+        } catch (Exception e) {
+            System.err.println("Email gönderilemedi: " + e.getMessage());
+            // Email gönderilemese bile kullanıcı kayıt oldu
+        }
 
         return ResponseEntity.ok("Kayıt başarılı! Email adresinizi doğrulayın.");
     }

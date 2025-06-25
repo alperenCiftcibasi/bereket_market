@@ -23,4 +23,7 @@ public class ProductRequestDTO {
 
     @NotNull(message = "Kategori bilgisi zorunludur")
     private Long categoryId;
+    
+    private String imageUrl;  
+
 }

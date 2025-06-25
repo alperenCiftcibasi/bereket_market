@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -9,13 +10,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Örnek kullanıcılar (isim ve soyisim eklendi)
-  const validUsers = {
-    'admin@example.com': { isim: 'Admin', soyisim: 'User', role: 'admin', password: 'admin123' },
-    'user@example.com': { isim: 'Ahmet', soyisim: 'Yılmaz', role: 'user', password: 'user123' },
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -23,27 +18,35 @@ function LoginPage() {
       return;
     }
 
-    const user = validUsers[email];
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/login', {
+        email,
+        password
+      });
 
-    if (!user || user.password !== password) {
-      alert('Hatalı email veya şifre!');
-      return;
-    }
+      const { token, role } = response.data;
 
-    const userData = {
-      username: email,
-      isim: user.isim,
-      soyisim: user.soyisim,
-      role: user.role,
-      token: 'fake-jwt-token',
-    };
+      // AuthContext'e kullanıcı bilgilerini gönder
+      login({
+        username: email,
+        token,
+        role
+      });
 
-    login(userData); // Context’e kaydet
+      // Rol bazlı yönlendirme
+      if (role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
 
-    if (user.role === 'admin') {
-      navigate('/admin');  // Admin ise admin paneline yönlendir
-    } else {
-      navigate('/');       // Diğer kullanıcılar ana sayfaya gider
+    } catch (error) {
+      console.error('Login hatası:', error);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Giriş başarısız. Lütfen tekrar deneyin.');
+      }
     }
   };
 

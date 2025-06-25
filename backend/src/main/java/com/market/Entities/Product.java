@@ -1,5 +1,6 @@
 package com.market.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.market.Repository.UserRepository;
 import com.market.Services.impl.ImplUserServices;
 
@@ -39,5 +40,6 @@ public class Product {
     
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     private Category category;
 }

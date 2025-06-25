@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000") // React portu
 @RestController
 @RequestMapping("/api/products")
 public class ImplProductController implements IProductController {

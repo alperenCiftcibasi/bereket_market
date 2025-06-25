@@ -2,7 +2,7 @@ package com.market.Entities;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.market.Repository.UserRepository;
 import com.market.Services.impl.ImplUserServices;
 
@@ -33,7 +33,7 @@ public class Category {
     
     
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Product> products;
 }
 

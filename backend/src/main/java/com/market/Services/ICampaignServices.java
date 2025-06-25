@@ -11,4 +11,7 @@ public interface ICampaignServices {
     void removeProductFromCampaign(Long campaignId, Long productId);
     List<CampaignResponseDTO> getAllCampaigns();
     void setActive(Long id, boolean isActive);
+
+    // Yeni eklenen metod: sadece aktif kampanyaları döndürür
+    List<CampaignResponseDTO> getAllActiveCampaigns();
 }

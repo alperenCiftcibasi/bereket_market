@@ -1,95 +1,122 @@
-import React, { createContext, useContext, useState, useEffect, useMemo  } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import axios from '../api/axiosInstance';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const { user } = useAuth(); // Kullanıcı bilgisi
-  // Sepetleri kullanıcı bazlı tutmak için obje kullanalım
-  const [allCarts, setAllCarts] = useState({}); // { username1: [...items], username2: [...] }
+  const { user } = useAuth(); // Giriş yapmış kullanıcı
+  const [cartItems, setCartItems] = useState([]);
 
-  // Kullanıcının kendi sepetini kolay erişim için
-  const cartItems = useMemo(() => {
-    return user ? allCarts[user.username] || [] : [];
-  }, [allCarts, user]);
-  // Sepete ekleme fonksiyonu
-  const addToCart = (product) => {
+  // Kullanıcının sepetini backend’den çek
+  const fetchCartItems = async () => {
+    if (!user) {
+      setCartItems([]);
+      return;
+    }
+    try {
+      const response = await axios.get('/api/cart', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setCartItems(response.data); // response.data: CartItemResponseDto listesi
+    } catch (error) {
+      console.error('Sepet verisi alınamadı:', error);
+      setCartItems([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, [user]);
+
+  // Sepete ürün ekle (backend’e POST)
+  const addToCart = async (product) => {
     if (!user) {
       alert('Lütfen önce giriş yapınız.');
       return;
     }
-    setAllCarts(prev => {
-      const userCart = prev[user.username] || [];
-      const productExists = userCart.find(item => item.id === product.id);
-      let updatedUserCart;
-      if (productExists) {
-        updatedUserCart = userCart.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        updatedUserCart = [...userCart, { ...product, quantity: 1 }];
-      }
-      return { ...prev, [user.username]: updatedUserCart };
-    });
-  };
-
-  const increaseQuantity = (productId) => {
-    if (!user) return;
-    setAllCarts(prev => {
-      const userCart = prev[user.username] || [];
-      const updatedUserCart = userCart.map(item =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+    try {
+      await axios.post(
+        '/api/cart/add',
+        { productId: product.id, quantity: 1 },
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
-      return { ...prev, [user.username]: updatedUserCart };
-    });
-  };
-
-  const decreaseQuantity = (productId) => {
-    if (!user) return;
-    setAllCarts(prev => {
-      const userCart = prev[user.username] || [];
-      const updatedUserCart = userCart
-        .map(item =>
-          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter(item => item.quantity > 0);
-      return { ...prev, [user.username]: updatedUserCart };
-    });
-  };
-
-  const removeFromCart = (productId) => {
-    if (!user) return;
-    setAllCarts(prev => {
-      const userCart = prev[user.username] || [];
-      const updatedUserCart = userCart.filter(item => item.id !== productId);
-      return { ...prev, [user.username]: updatedUserCart };
-    });
-  };
-
-  const clearCart = () => {
-    if (!user) return;
-    setAllCarts(prev => {
-      const newCarts = { ...prev };
-      newCarts[user.username] = [];
-      return newCarts;
-    });
-  };
-
-  // Opsiyonel: Sayfa yenilense bile kullanıcı sepetini localStorage’da tutabilirsin
-  useEffect(() => {
-    if (user) {
-      const storedCart = localStorage.getItem(`cart_${user.username}`);
-      if (storedCart) {
-        setAllCarts(prev => ({ ...prev, [user.username]: JSON.parse(storedCart) }));
-      }
+      fetchCartItems();
+    } catch (error) {
+      console.error('Sepete ekleme başarısız:', error);
     }
-  }, [user]);
+  };
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem(`cart_${user.username}`, JSON.stringify(cartItems));
+  // Ürün adet artır
+  const increaseQuantity = async (productId) => {
+    const item = cartItems.find(item => item.productId === productId);
+    if (!item) return;
+
+    try {
+      await axios.put(
+        '/api/cart/update',
+        null,
+        {
+          params: { productId, quantity: item.quantity + 1 },
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      fetchCartItems();
+    } catch (error) {
+      console.error('Adet artırılamadı:', error);
     }
-  }, [cartItems, user]);
+  };
+
+  // Ürün adet azalt
+  const decreaseQuantity = async (productId) => {
+    const item = cartItems.find(item => item.productId === productId);
+    if (!item || item.quantity <= 1) {
+      // Eğer adet 1 ise, silme işlemi yap
+      removeFromCart(productId);
+      return;
+    }
+
+    try {
+      await axios.put(
+        '/api/cart/update',
+        null,
+        {
+          params: { productId, quantity: item.quantity - 1 },
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      fetchCartItems();
+    } catch (error) {
+      console.error('Adet azaltılamadı:', error);
+    }
+  };
+
+  // Ürün sepetten sil
+  const removeFromCart = async (productId) => {
+    try {
+      await axios.delete('/api/cart/remove', {
+        params: { productId },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      fetchCartItems();
+    } catch (error) {
+      console.error('Ürün sepetten silinemedi:', error);
+    }
+  };
+
+  // Sepeti temizle
+  const clearCart = async () => {
+    try {
+      await axios.delete('/api/cart/clear', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      fetchCartItems();
+    } catch (error) {
+      console.error('Sepet temizlenemedi:', error);
+    }
+  };
 
   return (
     <CartContext.Provider

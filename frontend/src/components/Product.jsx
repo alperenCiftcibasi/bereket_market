@@ -5,20 +5,20 @@ function Product({ product, onClick }) {
   const { cartItems, addToCart, increaseQuantity, decreaseQuantity } = useCart();
 
   // Sepette ürün var mı?
-  const cartItem = cartItems.find(item => item.id === product.id);
+  const cartItem = cartItems.find(item => item.productId === product.id);
 
   return (
-    <div 
-      onClick={onClick} 
+    <div
+      onClick={onClick}
       style={{ cursor: 'pointer', padding: '1rem', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#fff' }}
     >
       <img
-        src={product.imageUrl} 
+        src={product.imageUrl}
         alt={product.name}
         style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
       />
       <h3 style={{ margin: '1rem 0 0.5rem 0' }}>{product.name}</h3>
-      <p style={{ color: '#888', marginBottom: '0.5rem' }}>{product.category}</p>
+      <p style={{ color: '#888', marginBottom: '0.5rem' }}>{product.categoryName || product.category || ''}</p>
       <p style={{ fontWeight: 'bold', marginBottom: '1rem' }}>{product.price}₺</p>
 
       {cartItem ? (

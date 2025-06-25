@@ -9,6 +9,7 @@ import com.market.Dto.CampaignRequestDTO;
 import com.market.Dto.CampaignResponseDTO;
 import com.market.Services.ICampaignServices;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,5 +70,13 @@ public class ImplCampaignServices implements ICampaignServices {
                 .orElseThrow(() -> new RuntimeException("Campaign not found"));
         campaign.setIsActive(isActive);
         campaignRepository.save(campaign);
+    }
+
+    // Yeni eklenen metod: sadece aktif kampanyaları döndürür
+    @Override
+    public List<CampaignResponseDTO> getAllActiveCampaigns() {
+        return campaignRepository.findByIsActiveTrue().stream()
+                .map(campaignMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

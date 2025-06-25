@@ -34,10 +34,15 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+            	.requestMatchers(HttpMethod.GET, "/api/admin/campaigns/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/admin/campaigns/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/admin/campaigns/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/admin/campaigns/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/verify").permitAll()  // ✅ Bunu ekledik
+                .requestMatchers(HttpMethod.GET, "/rest/api/categories/list").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                 .requestMatchers(
                         "/v3/api-docs/**",

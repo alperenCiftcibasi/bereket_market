@@ -1,17 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const campaigns = [
-  { id: 'yaz-indirimi', title: 'Yaz İndirimi' },
-  { id: 'hafta-sonu-firsatlari', title: 'Hafta Sonu Fırsatları' },
-];
+import axios from '../api/axiosInstance';
 
 function Campaigns() {
+  const [campaigns, setCampaigns] = useState(null);
   const navigate = useNavigate();
+
+  const fetchCampaigns = async () => {
+    try {
+      const response = await axios.get('/api/admin/campaigns/get'); // Endpointi kontrol et
+      setCampaigns(response.data);
+    } catch (error) {
+      console.error('Kampanya çekme hatası:', error);
+      setCampaigns([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCampaigns(); // İlk yüklemede çağır
+
+    // 10 saniyede bir kampanyaları güncelle
+    const intervalId = setInterval(() => {
+      fetchCampaigns();
+    }, 10000);
+
+    // Cleanup: component unmount olduğunda interval'ı temizle
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleClick = (campaignId) => {
     navigate(`/campaign/${campaignId}`);
   };
+
+  if (campaigns === null) {
+    return <p style={{ padding: '1rem' }}>Kampanyalar yükleniyor...</p>;
+  }
+
+  if (campaigns.length === 0) {
+    return <p style={{ padding: '1rem' }}>Aktif kampanya bulunmamaktadır.</p>;
+  }
 
   return (
     <div style={{
@@ -34,7 +61,7 @@ function Campaigns() {
             fontWeight: 'bold'
           }}
         >
-          {campaign.title}
+          {campaign.name}
         </div>
       ))}
     </div>

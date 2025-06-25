@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import axios from 'axios';
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState(''); // Backend için gerekli
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password || !confirmPassword) {
+    if (!email || !name || !password || !confirmPassword) {
       alert('Lütfen tüm alanları doldurun.');
       return;
     }
@@ -21,10 +23,24 @@ function RegisterPage() {
       return;
     }
 
-    // TODO: Backend API ile kayıt işlemi yapılacak
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/register', {
+        email,
+        password,
+        name
+      });
 
-    alert(`Kayıt tamamlandı: ${email}`);
-    navigate('/login');  // Kayıttan sonra giriş sayfasına yönlendir
+      alert(response.data); // örneğin: "Kayıt başarılı! Email adresinizi doğrulayın."
+      navigate('/login');
+
+    } catch (error) {
+      console.error('Kayıt hatası:', error);
+      if (error.response?.data) {
+        alert(error.response.data); // örneğin: "Email zaten kayıtlı"
+      } else {
+        alert('Kayıt işlemi başarısız. Lütfen tekrar deneyin.');
+      }
+    }
   };
 
   return (
@@ -58,6 +74,26 @@ function RegisterPage() {
           }}>
             Kayıt Ol
           </h2>
+
+          <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', color: '#555' }}>
+            Ad Soyad
+          </label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              marginBottom: '1.5rem',
+              borderRadius: '8px',
+              border: '1px solid #ccc',
+              fontSize: '1rem'
+            }}
+            placeholder="Adınızı ve Soyadınızı girin"
+            required
+          />
 
           <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color: '#555' }}>
             Email

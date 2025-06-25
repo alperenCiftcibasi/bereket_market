@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000") // React portu
 @RestController
 @RequestMapping("/api/admin/campaigns")
 public class ImplCampaignController implements ICampaignController {
@@ -42,7 +42,7 @@ public class ImplCampaignController implements ICampaignController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping(path = "/get")
     public ResponseEntity<List<CampaignResponseDTO>> getAllCampaigns() {
         return ResponseEntity.ok(campaignServices.getAllCampaigns());
     }
