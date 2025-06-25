@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import com.market.Dto.AuthRequest;
 import com.market.Dto.AuthResponse;
+import com.market.Dto.PasswordResetRequestDTO;
+import com.market.Dto.PasswordResetDTO;
 import com.market.Entities.User;
 import com.market.Entities.VerificationToken;
+import com.market.Entities.PasswordResetToken;
 import com.market.Repository.UserRepository;
 import com.market.Repository.VerificationTokenRepository;
+import com.market.Repository.PasswordResetTokenRepository;
 import com.market.Security.JwtUtil;
 import com.market.Services.impl.EmailService;
 
@@ -37,6 +41,9 @@ public class ImplAuthController {
 
     @Autowired
     private VerificationTokenRepository tokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
     private EmailService emailService;
@@ -111,5 +118,52 @@ public class ImplAuthController {
         tokenRepository.delete(vt); // doğrulandıktan sonra token silinir
 
         return ResponseEntity.ok("Email başarıyla doğrulandı.");
+    }
+
+    // 📌 Şifremi unuttum (reset linki gönder)
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody PasswordResetRequestDTO dto) {
+        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
+
+        // Güvenlik için: kullanıcı bulunamazsa da aynı cevap verilir
+        if (user == null) {
+            return ResponseEntity.ok("Eğer bu email kayıtlıysa, sıfırlama bağlantısı gönderildi.");
+        }
+
+        // Token oluştur ve kaydet
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUser(user);
+        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+        passwordResetTokenRepository.save(resetToken);
+
+        // Mail gönder
+        String link = "http://localhost:3000/reset-password?token=" + token; // frontend linkini güncelleyebilirsin
+        emailService.sendSimpleMessage(
+            user.getEmail(),
+            "Şifre Sıfırlama",
+            "Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:\n" + link
+        );
+
+        return ResponseEntity.ok("Eğer bu email kayıtlıysa, sıfırlama bağlantısı gönderildi.");
+    }
+
+    // 📌 Şifreyi sıfırla (yeni şifre belirleme)
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetDTO dto) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(dto.getToken()).orElse(null);
+
+        if (resetToken == null || resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body("Geçersiz veya süresi dolmuş token");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+
+        return ResponseEntity.ok("Şifreniz başarıyla güncellendi.");
     }
 }
