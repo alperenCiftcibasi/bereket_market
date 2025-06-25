@@ -1,16 +1,9 @@
 package com.market.Entities;
 
-import java.util.List;
-
-import com.market.Repository.UserRepository;
-import com.market.Services.impl.ImplUserServices;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,17 +22,14 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses;
     
     private String role; // "USER" veya "ADMIN" gibi değerler
-    
- // Yeni alanlar
-    private String phone;         // Telefon numarası
-    private String address;       // Adres
-    private String fullName;      // İsim Soyisim (Opsiyonel, name’den farklı)
-    private String paymentMethod; // Ödeme yöntemi (örn: Kredi kartı, Paypal vb
-    
-    private boolean enabled = false; // Email doğrulanana kadar giriş engelli
 
+    // Yeni alanlar
+    private String phone;         // Telefon numarası
+    private String address;       // Tek bir adres alanı
+    private String fullName;      // İsim Soyisim (Opsiyonel, name’den farklı)
+    private String paymentMethod; // Ödeme yöntemi (örn: Kredi kartı, Paypal vb.)
+
+    private boolean enabled = false; // Email doğrulanana kadar giriş engelli
 }
